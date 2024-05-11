@@ -1,0 +1,28 @@
+﻿
+Microsoft Visual Studio Solution File, Format Version 12.00
+# Visual Studio Version 17
+VisualStudioVersion = 17.0.31903.59
+MinimumVisualStudioVersion = 10.0.40219.1
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "auction-serviceAPI", "auction-serviceAPI\auction-serviceAPI.csproj", "{CDB66774-E0C9-45BD-AC2F-905C1BCBE15A}"
+EndProject
+Project("{FAE04EC0-301F-11D3-BF4B-00C04F79EFBC}") = "auction-serviceAPI.Test", "auction-serviceAPI.Test\auction-serviceAPI.Test.csproj", "{E31811B0-F68E-482D-9A8A-7385FEDD930E}"
+EndProject
+Global
+	GlobalSection(SolutionConfigurationPlatforms) = preSolution
+		Debug|Any CPU = Debug|Any CPU
+		Release|Any CPU = Release|Any CPU
+	EndGlobalSection
+	GlobalSection(SolutionProperties) = preSolution
+		HideSolutionNode = FALSE
+	EndGlobalSection
+	GlobalSection(ProjectConfigurationPlatforms) = postSolution
+		{CDB66774-E0C9-45BD-AC2F-905C1BCBE15A}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{CDB66774-E0C9-45BD-AC2F-905C1BCBE15A}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{CDB66774-E0C9-45BD-AC2F-905C1BCBE15A}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{CDB66774-E0C9-45BD-AC2F-905C1BCBE15A}.Release|Any CPU.Build.0 = Release|Any CPU
+		{E31811B0-F68E-482D-9A8A-7385FEDD930E}.Debug|Any CPU.ActiveCfg = Debug|Any CPU
+		{E31811B0-F68E-482D-9A8A-7385FEDD930E}.Debug|Any CPU.Build.0 = Debug|Any CPU
+		{E31811B0-F68E-482D-9A8A-7385FEDD930E}.Release|Any CPU.ActiveCfg = Release|Any CPU
+		{E31811B0-F68E-482D-9A8A-7385FEDD930E}.Release|Any CPU.Build.0 = Release|Any CPU
+	EndGlobalSection
+EndGlobal
