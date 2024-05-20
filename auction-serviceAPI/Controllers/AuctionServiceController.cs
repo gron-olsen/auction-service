@@ -14,6 +14,23 @@ public class AuctionServiceController : ControllerBase
     {
         _logger = logger;
     }
+     [HttpGet("Version")]
+    public Dictionary<string, string> GetVersion()
+    {
+        var properties = new Dictionary<string, string>();
+        var assembly = typeof(Program).Assembly;
+
+        properties.Add("service", "Auction");
+        var ver = System.Diagnostics.FileVersionInfo.GetVersionInfo(typeof(Program).Assembly.Location).FileVersion ?? "Undefined";
+        Console.WriteLine($"Version before: {ver}");
+        properties.Add("version",ver);
+
+        var feature = HttpContext.Features.Get<IHttpConnectionFeature>();
+        var localIPAddr = feature?.LocalIpAddress?.ToString() ?? "N/A";
+        properties.Add("local-host-address", localIPAddr);
+
+        return properties;
+    }
 
     [HttpGet("getAuction/{id}")]
 
