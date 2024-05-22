@@ -7,21 +7,17 @@ public class AuctionService
 {
     private string connectionString = string.Empty;
     private ConnectionMultiplexer redisConnection;
-
     IDatabase AuctionDatabase;
 
     public AuctionService(IConfiguration configuration)
     {
-
         string connection = configuration["redisConnection"] ?? "localhost";
-
         redisConnection = ConnectionMultiplexer.Connect(connection);
 
         if (!redisConnection.IsConnected)
         {
-            throw new Exception("Fejl: Kan ikke oprette forbindelse til Redis.");
+            throw new Exception("no connection to redis");
         }
-
         AuctionDatabase = redisConnection.GetDatabase();
     }
     public int GetAuctionPrice(int id)
@@ -35,8 +31,6 @@ public class AuctionService
     {
         return (int?)AuctionDatabase.StringGet(id.ToString()) != null;
     }
-
-
     public bool SetAuctionPrice(int id, int bidPrice)
     {
 
