@@ -1,10 +1,12 @@
 using StackExchange.Redis;
+using Newtonsoft.Json;
 using auctionServiceAPI.Models;
 
 namespace auctionServiceAPI.Services;
 
 public class AuctionService
 {
+
     private string connectionString = string.Empty;
     private ConnectionMultiplexer redisConnection;
     IDatabase AuctionDatabase;

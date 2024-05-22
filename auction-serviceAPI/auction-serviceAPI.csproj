@@ -7,14 +7,17 @@
     <Company>Grøn og Olsen</Company>
     <Authors>Gruppe 432</Authors>
     
-    <AssemblyVersion>0.2.1</AssemblyVersion>
-    <FileVersion>0.2.1</FileVersion>
+    <AssemblyVersion>0.3.3</AssemblyVersion>
+    <FileVersion>0.3.3</FileVersion>
     
     <Description>
       0.0.1 initial commit
       0.1.0 added models, monitoring, services, workflow, nlog, script
       0.2.1 fixes on models, services + added controller
       0.2.2 fixed rabbitMQ + REDIS
+      0.3.3 Added bid and changed a bit
+
+      0.4.0 Added dockerfile
     </Description>
         </PropertyGroup>
   <ItemGroup>
@@ -30,5 +33,6 @@
     <None Include="NLog.config">
     <CopyToOutputDirectory>PreserveNewest</CopyToOutputDirectory>
   </None>
+    <PackageReference Include="System.IdentityModel.Tokens.Jwt" Version="7.5.2" />
   </ItemGroup>
 </Project>

@@ -13,9 +13,9 @@ try {
     
 var builder = WebApplication.CreateBuilder(args);
 
-
-string mySecret = Environment.GetEnvironmentVariable("Secret") ?? "none";
-string myIssuer = Environment.GetEnvironmentVariable("Issuer") ?? "none";
+    string myValidAudience = Environment.GetEnvironmentVariable("Valid")?? "http://localhost";
+    string mySecret = Environment.GetEnvironmentVariable("Secret") ?? "none";
+    string myIssuer = Environment.GetEnvironmentVariable("Issuer") ?? "none";
 
 builder.Services
     .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
@@ -25,7 +25,7 @@ builder.Services
     {
         ValidateIssuer = true,
         ValidateAudience = true,
-        ValidateLifetime = true,
+        ValidateLifetime = false,
         ValidateIssuerSigningKey = true,
         ValidIssuer = myIssuer,
         ValidAudience = "http://localhost",

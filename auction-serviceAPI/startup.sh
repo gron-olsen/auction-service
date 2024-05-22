@@ -4,5 +4,7 @@ export database="AuctionDB"
 export collection="auctionCol"
 export rabbitMQPort="5672"
 export redisConnection="redis-18021.c251.east-us-mz.azure.redns.redis-cloud.com:18021,password=1234"
+export Secret="VeryLongAndVerySecretSecretThatIsSuperSecretive"
+export Issuer="VeryLongAndVerySecretIssuerThatIsSuperGood"
 echo $database $collection
-dotnet run server="$server" port="$port" auctionCol="$collection" database="$database"
+dotnet run server="$server" port="$port" auctionCol="$collection" database="$database" 
