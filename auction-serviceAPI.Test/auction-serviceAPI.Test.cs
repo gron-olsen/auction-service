@@ -10,20 +10,19 @@ using auctionServiceAPI.Controllers;
 using auctionServiceAPI.Services;
 using auctionServiceAPI.Models;
 using Microsoft.Extensions.Configuration;
+using Microsoft.Extensions.Logging;
 using System.Net;
-global using NUnit.Framework;
-
+using Microsoft.VisualStudio.TestTools.UnitTesting;
 
 namespace auctionServiceAPI.Test
 {
     [TestClass]
     public class AuctionControllerTests
     {
-        private AuctionController _auctionController;
-        private static Mock<ILogger<AuctionController>> _loggerMock;
-        private Mock<AuctionService> _auctionServiceMock;
-        private Mock<IConfiguration> _configurationMock;
-
+        private readonly AuctionController _auctionController;
+        private readonly Mock<ILogger<AuctionController>> _loggerMock;
+        private readonly Mock<AuctionService> _auctionServiceMock;
+        private readonly Mock<IConfiguration> _configurationMock;
 
         public AuctionControllerTests()
         {
@@ -35,44 +34,46 @@ namespace auctionServiceAPI.Test
             _configurationMock.SetupGet(x => x["port"]).Returns("27017");
             _configurationMock.SetupGet(x => x["collection"]).Returns("auctionCol");
             _configurationMock.SetupGet(x => x["database"]).Returns("auctionDB");
-
+            _configurationMock.SetupGet(x => x["redisConnection"]).Returns("redis-18021.c251.east-us-mz.azure.redns.redis-cloud.com:18021,password=1234");
+            _configurationMock.SetupGet(x => x["rabbitMQPort"]).Returns("5672");
+            
             _auctionController = new AuctionController(_loggerMock.Object, _configurationMock.Object);
         }
+
         [TestMethod]
-        public void PostAuction_Test()
+        public async Task PostAuction_Test()
         {
-            //Arrange
+            // Arrange
             var auctionsproducts = new AuctionProduct[]
             {
-                new AuctionProduct { ProductId = 1, ProductStartPrice = 100, ProductEndDate = DateTime.Now.AddDays(1) },
-                new AuctionProduct { ProductId = 2, ProductStartPrice = 200, ProductEndDate = DateTime.Now.AddDays(2) },
-                new AuctionProduct { ProductId = 3, ProductStartPrice = 300, ProductEndDate = DateTime.Now.AddDays(7) }
+                new AuctionProduct { ProductID = 1, ProductStartPrice = 100, ProductEndDate = DateTime.Now.AddDays(1) },
+                new AuctionProduct { ProductID = 2, ProductStartPrice = 200, ProductEndDate = DateTime.Now.AddDays(2) },
+                new AuctionProduct { ProductID = 3, ProductStartPrice = 300, ProductEndDate = DateTime.Now.AddDays(7) }
             };
 
-            //Act
+            // Act
             var result = await _auctionController.AuctionPost(auctionsproducts);
 
-            //Assert
+            // Assert
             Assert.AreEqual(200, (result as OkObjectResult).StatusCode);
         }
 
-
         [TestMethod]
-        public void GetAuctionPrice_Test()
+        public async Task GetAuctionPrice_Test()
         {
-            //Arrange
+            // Arrange
             var auctionsproducts = new AuctionProduct[]
             {
-                new AuctionProduct { ProductId = 1, ProductStartPrice = 100, ProductEndDate = DateTime.Now.AddDays(1) },
-                new AuctionProduct { ProductId = 2, ProductStartPrice = 200, ProductEndDate = DateTime.Now.AddDays(2) },
-                new AuctionProduct { ProductId = 3, ProductStartPrice = 300, ProductEndDate = DateTime.Now.AddDays(7) }
+                new AuctionProduct { ProductID = 1, ProductStartPrice = 100, ProductEndDate = DateTime.Now.AddDays(1) },
+                new AuctionProduct { ProductID = 2, ProductStartPrice = 200, ProductEndDate = DateTime.Now.AddDays(2) },
+                new AuctionProduct { ProductID = 3, ProductStartPrice = 300, ProductEndDate = DateTime.Now.AddDays(7) }
             };
 
-            //Act
+            // Act
             var result = await _auctionController.GetAuctionPrice(3);
 
-            //Assert
-            Assert.AreEqual(200, (result as OkObjectResult));
+            // Assert
+            Assert.AreEqual(200, (result as OkObjectResult).StatusCode);
         }
     }
 }
