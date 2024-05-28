@@ -11,27 +11,26 @@ var logger = NLog.LogManager.Setup().LoadConfigurationFromAppSettings().GetCurre
 
 try {
     
-var builder = WebApplication.CreateBuilder(args);
+ var builder = WebApplication.CreateBuilder(args);
 
-    string myValidAudience = Environment.GetEnvironmentVariable("Valid")?? "http://localhost";
+    string myValidAudience = Environment.GetEnvironmentVariable("Valid") ?? "http://localhost";
     string mySecret = Environment.GetEnvironmentVariable("Secret") ?? "none";
     string myIssuer = Environment.GetEnvironmentVariable("Issuer") ?? "none";
 
-builder.Services
-    .AddAuthentication(JwtBearerDefaults.AuthenticationScheme)
-    .AddJwtBearer(options =>
-{
-    options.TokenValidationParameters = new TokenValidationParameters()
+
+    builder.Services.AddAuthentication(JwtBearerDefaults.AuthenticationScheme).AddJwtBearer(options =>
     {
-        ValidateIssuer = true,
-        ValidateAudience = true,
-        ValidateLifetime = false,
-        ValidateIssuerSigningKey = true,
-        ValidIssuer = myIssuer,
-        ValidAudience = myValidAudience,
-        IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(mySecret))
-    };
-});
+        options.TokenValidationParameters = new TokenValidationParameters()
+        {
+            ValidateIssuer = true,
+            ValidateAudience = true,
+            ValidateLifetime = true,
+            ValidateIssuerSigningKey = true,
+            ValidIssuer = myIssuer,
+            ValidAudience = myValidAudience,
+            IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(mySecret))
+        };
+    });
 
 builder.Logging.ClearProviders();
 builder.Host.UseNLog();

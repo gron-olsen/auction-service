@@ -100,21 +100,7 @@ public class AuctionController : ControllerBase
 
         return Ok($"{productCreated} \n{productExists}");
     }
-    [HttpGet("getPrice/{id}")]
-    public async Task<IActionResult> GetAuctionPrice(int id)
-    {
-        // Retrieving the auction price from Redis cache
-        var checkAuctionPrice = auctionService.GetAuctionPrice(id);
-
-        if (checkAuctionPrice == -1)
-        {
-            _logger.LogError("Auction not found for AuctionID: {AuctionID}", id);
-            return BadRequest("Id does not exist");
-        }
-
-        _logger.LogInformation("Auction price retrieved for AuctionID: {AuctionID}. Price: {AuctionPrice}", id, checkAuctionPrice);
-        return Ok(checkAuctionPrice);
-    }
+    
     [HttpGet("GetAuctions")]
     public IActionResult GetAuctions()
     {
@@ -122,11 +108,10 @@ public class AuctionController : ControllerBase
         return Ok(auctions);
     }
 
-
-
+    //remember to re-enable Authorize
     //[Authorize]
     [HttpPost("AuctionBid")]
-    public async Task<IActionResult> PostAuctionBid([FromBody] Bid bid)
+    public async Task<IActionResult> AuctionBid([FromBody] Bid bid)
     {
         try
         {
@@ -134,27 +119,23 @@ public class AuctionController : ControllerBase
 
             if (checkAuctionPrice == -1)
             {
-                // Logging a warning if the auction does not exist
-                string feedback = $"User with ID {bid.BidUserID} placed a bid on a non-existing auction (AuctionID: {bid.AuctionID}).";
-                _logger.LogWarning(feedback);
-                return BadRequest(feedback);
+                string check = $"User with ID {bid.BidUserID} placed a bid on a non-existing auction (AuctionID: {bid.AuctionID}).";
+                _logger.LogWarning(check);
+                return BadRequest(check);
             }
 
             if (checkAuctionPrice >= bid.BidPrice)
             {
-                // Logging a warning if the bid price is not higher than the current auction price
                 string feedback = $"User with ID {bid.BidUserID} placed a bid of {bid.BidPrice}, which is below or equal to the current auction price of {checkAuctionPrice}.";
                 _logger.LogWarning(feedback);
                 return BadRequest(feedback);
             }
 
-            // Updating the auction price in Redis cache
-            auctionService.SetAuctionPrice(bid.AuctionID, bid.BidPrice);
+            auctionService.UpdateAuctionPrice(bid.AuctionID, bid.BidPrice);
 
             string message = JsonConvert.SerializeObject(bid);
             var body = Encoding.UTF8.GetBytes(message);
 
-            // Publishing the bid to RabbitMQ for further processing
             channel.BasicPublish(exchange: string.Empty,
                         routingKey: "auction",
                         basicProperties: null,

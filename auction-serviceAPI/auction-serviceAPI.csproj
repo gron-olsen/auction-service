@@ -7,8 +7,8 @@
     <Company>Grøn og Olsen</Company>
     <Authors>Gruppe 432</Authors>
     
-    <AssemblyVersion>0.3.3</AssemblyVersion>
-    <FileVersion>0.3.3</FileVersion>
+    <AssemblyVersion>0.5.1</AssemblyVersion>
+    <FileVersion>0.5.1</FileVersion>
     
     <Description>
       0.0.1 initial commit
@@ -18,7 +18,7 @@
       0.3.3 Added bid and changed a bit
       0.4.0 Added dockerfile
       0.5.0 Added GetAuctions
-      
+      0.5.1 Minor changes to calls + naming
     </Description>
         </PropertyGroup>
   <ItemGroup>
