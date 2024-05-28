@@ -3,7 +3,7 @@ export port="27017"
 export database="AuctionDB"
 export collection="auctionCol"
 export rabbitMQPort="5672"
-export redisConnection="redis-18021.c251.east-us-mz.azure.redns.redis-cloud.com:18021,password=1234"
+export redisConnection="redis-16065.c56.east-us.azure.redns.redis-cloud.com:16065,password=1234"
 export Secret="VeryLongAndVerySecretSecretThatIsSuperSecretive"
 export Issuer="VeryLongAndVerySecretIssuerThatIsSuperGood"
 echo $database $collection

@@ -28,7 +28,7 @@ builder.Services
         ValidateLifetime = false,
         ValidateIssuerSigningKey = true,
         ValidIssuer = myIssuer,
-        ValidAudience = "http://localhost",
+        ValidAudience = myValidAudience,
         IssuerSigningKey = new SymmetricSecurityKey(Encoding.UTF8.GetBytes(mySecret))
     };
 });

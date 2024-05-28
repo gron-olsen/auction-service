@@ -77,27 +77,28 @@ public class AuctionController : ControllerBase
     }
 
     [HttpPost("AuctionPost")]
-    public async Task<IActionResult> AuctionPost([FromBody] AuctionProduct[] ProductList)
+    public async Task<IActionResult> AuctionPost([FromBody] AuctionProduct[] auctionProduct)
     {
-        string ProductCreated = "Auctions with the following ProductIDs have been posted: ";
-        string ProductExists = "The following products were NOT posted, as they already exist: ";
+        string productCreated = "Auctions with the following ProductIDs have been posted: ";
+        string productExists = "The following products were NOT posted, as they already exist: ";
 
-        for (int i = 0; i < ProductList.Length; i++)
+        foreach (var info in auctionProduct)
         {
-            if (auctionService.AuctionExists(ProductList[i].ProductID) == false)
+            if (!auctionService.AuctionExists(info.ProductID))
             {
-                ProductCreated += ProductList[i].ProductID.ToString() + " ";
+                productCreated += $"{info.ProductID} ";
             }
-            if (auctionService.AuctionExists(ProductList[i].ProductID) == true)
+            else
             {
-                ProductExists += ProductList[i].ProductID.ToString() + " ";
+                productExists += $"{info.ProductID} ";
             }
-            // Adding to Redis cache
-            auctionService.AddToAuction(ProductList[i].ProductID, ProductList[i].ProductStartPrice, ProductList[i].ProductEndDate);
-        }
-        _logger.LogInformation(ProductCreated, ProductExists);
 
-        return Ok($"{ProductCreated} \n{ProductExists}");
+            // Adding to Redis cache
+            auctionService.AddToAuction(info.ProductID, info.ProductStartPrice, info.ProductEndDate);
+        }
+        _logger.LogInformation($"{productCreated} \n{productExists}");
+
+        return Ok($"{productCreated} \n{productExists}");
     }
     [HttpGet("getPrice/{id}")]
     public async Task<IActionResult> GetAuctionPrice(int id)
@@ -114,8 +115,16 @@ public class AuctionController : ControllerBase
         _logger.LogInformation("Auction price retrieved for AuctionID: {AuctionID}. Price: {AuctionPrice}", id, checkAuctionPrice);
         return Ok(checkAuctionPrice);
     }
+    [HttpGet("GetAuctions")]
+    public IActionResult GetAuctions()
+    {
+        var auctions = auctionService.GetAllAuctions();
+        return Ok(auctions);
+    }
 
-    [Authorize]
+
+
+    //[Authorize]
     [HttpPost("AuctionBid")]
     public async Task<IActionResult> PostAuctionBid([FromBody] Bid bid)
     {

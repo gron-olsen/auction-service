@@ -16,8 +16,9 @@
       0.2.1 fixes on models, services + added controller
       0.2.2 fixed rabbitMQ + REDIS
       0.3.3 Added bid and changed a bit
-
       0.4.0 Added dockerfile
+      0.5.0 Added GetAuctions
+      
     </Description>
         </PropertyGroup>
   <ItemGroup>

@@ -9,7 +9,7 @@ public class AuctionService
 
     private string connectionString = string.Empty;
     private ConnectionMultiplexer redisConnection;
-    IDatabase AuctionDatabase;
+    IDatabase RedisClient;
 
     public AuctionService(IConfiguration configuration)
     {
@@ -20,18 +20,18 @@ public class AuctionService
         {
             throw new Exception("no connection to redis");
         }
-        AuctionDatabase = redisConnection.GetDatabase();
+        RedisClient = redisConnection.GetDatabase();
     }
     public int GetAuctionPrice(int id)
     {
 
-        int bidPrice = (int)AuctionDatabase.StringGet(id.ToString());
+        int bidPrice = (int)RedisClient.StringGet(id.ToString());
 
         return bidPrice > 0 ? bidPrice : -1;
     }
     public bool AuctionExists(int id)
     {
-        return (int?)AuctionDatabase.StringGet(id.ToString()) != null;
+        return (int?)RedisClient.StringGet(id.ToString()) != null;
     }
     public bool SetAuctionPrice(int id, int bidPrice)
     {
@@ -39,20 +39,45 @@ public class AuctionService
         var checkAuctionExist = AuctionExists(id);
         if (checkAuctionExist)
         {
-            AuctionDatabase.StringSet(id.ToString(), bidPrice);
+            RedisClient.StringSet(id.ToString(), bidPrice);
         }
         return checkAuctionExist;
     }
 
-    public bool AddToAuction(int id, int bidPrice, DateTime expireDate)
+public bool AddToAuction(int id, int bidPrice, DateTime expireDate)
+{
+    bool checkAuctionExist = AuctionExists(id);
+    if (!checkAuctionExist)
     {
-        bool checkAuctionExist = AuctionExists(id);
-        if (checkAuctionExist == false)
+        var auctionProduct = new AuctionProduct
         {
-            var expiryTimeSpan = expireDate.Subtract(DateTime.UtcNow);
-            AuctionDatabase.StringSet(id.ToString(), bidPrice, expiryTimeSpan);
+            ProductID = id,
+            ProductStartPrice = bidPrice,
+            ProductEndDate = expireDate
+        };
+
+        // Convert auctionInfo object to JSON
+        string jsonAuctionInfo = JsonConvert.SerializeObject(auctionProduct);
+
+        var expiryTimeSpan = expireDate.Subtract(DateTime.UtcNow);
+        
+        // Store JSON object in Redis
+        RedisClient.StringSet(id.ToString(), jsonAuctionInfo, expiryTimeSpan);
+    }
+    return !checkAuctionExist;
+}
+    public List<AuctionProduct> GetAllAuctions()
+    {
+        var auctions = new List<AuctionProduct>();
+
+        foreach (var key in redisConnection.GetServer(redisConnection.GetEndPoints()[0]).Keys())
+        {
+            string jsonAuctionInfo = RedisClient.StringGet(key);
+            var auctionProduct = JsonConvert.DeserializeObject<AuctionProduct>(jsonAuctionInfo);
+            auctions.Add(auctionProduct);
         }
-        //Hvis auction allerede findes returnere den falsk, fordi den må ikke overskrive en auction.
-        return !checkAuctionExist;
+
+        return auctions;
     }
 }
+
