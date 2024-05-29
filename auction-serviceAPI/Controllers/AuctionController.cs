@@ -75,6 +75,7 @@ public class AuctionController : ControllerBase
 
         return properties;
     }
+    
 
     [HttpPost("AuctionPost")]
     public async Task<IActionResult> AuctionPost([FromBody] AuctionProduct[] auctionProduct)
