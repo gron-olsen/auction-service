@@ -10,6 +10,8 @@ services:
     command: -config.file=/etc/loki/local-config.yaml
     networks:
       - loki
+    volumes:
+      - lokidada:/loki
 
   grafana:
     image: grafana/grafana:latest
@@ -64,3 +66,4 @@ services:
 
 volumes:
   mongodbdata:
+  lokidada:
