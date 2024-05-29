@@ -100,7 +100,22 @@ public class AuctionController : ControllerBase
 
         return Ok($"{productCreated} \n{productExists}");
     }
-    
+    [HttpGet("getPrice/{id}")]
+    public async Task<IActionResult> GetAuctionPrice(int id)
+    {
+        // Retrieving the auction price from Redis cache
+        var checkAuctionPrice = auctionService.GetAuctionPrice(id);
+
+        if (checkAuctionPrice == -1)
+        {
+            _logger.LogError("Auction not found for AuctionID: {AuctionID}", id);
+            return BadRequest("Id does not exist");
+        }
+
+        _logger.LogInformation("Auction price retrieved for AuctionID: {AuctionID}. Price: {AuctionPrice}", id, checkAuctionPrice);
+        return Ok(checkAuctionPrice);
+    }
+
     [HttpGet("GetAuctions")]
     public IActionResult GetAuctions()
     {
@@ -119,14 +134,14 @@ public class AuctionController : ControllerBase
 
             if (checkAuctionPrice == -1)
             {
-                string check = $"User with ID {bid.BidUserID} placed a bid on a non-existing auction (AuctionID: {bid.AuctionID}).";
+                string check = $"User with ID {bid.UserID} placed a bid on a non-existing auction (AuctionID: {bid.AuctionID}).";
                 _logger.LogWarning(check);
                 return BadRequest(check);
             }
 
             if (checkAuctionPrice >= bid.BidPrice)
             {
-                string feedback = $"User with ID {bid.BidUserID} placed a bid of {bid.BidPrice}, which is below or equal to the current auction price of {checkAuctionPrice}.";
+                string feedback = $"User with ID {bid.UserID} placed a bid of {bid.BidPrice}, which is below or equal to the current auction price of {checkAuctionPrice}.";
                 _logger.LogWarning(feedback);
                 return BadRequest(feedback);
             }

@@ -34,7 +34,7 @@ namespace auctionServiceAPI.Test
             _configurationMock.SetupGet(x => x["port"]).Returns("27017");
             _configurationMock.SetupGet(x => x["collection"]).Returns("auctionCol");
             _configurationMock.SetupGet(x => x["database"]).Returns("auctionDB");
-            _configurationMock.SetupGet(x => x["redisConnection"]).Returns("redis-18021.c251.east-us-mz.azure.redns.redis-cloud.com:18021,password=1234");
+            _configurationMock.SetupGet(x => x["redisConnection"]).Returns("redis-16065.c56.east-us.azure.redns.redis-cloud.com:16065,password=1234");
             _configurationMock.SetupGet(x => x["rabbitMQPort"]).Returns("5672");
             
             _auctionController = new AuctionController(_loggerMock.Object, _configurationMock.Object);
