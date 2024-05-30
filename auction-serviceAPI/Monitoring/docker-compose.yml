@@ -26,14 +26,18 @@ services:
       dockerfile: dockerfile
     image: caspfh/auction-serviceapi:latest
     ports:
-      - "5289:8082"
+      - "5230:8082"
     expose: 
       - "8082"
     environment:
-      - ASPNETCORE_ENVIRONMENT=Development
-      - connectionString=mongodb://admin:1234@mongodb:27017/
-      - database=catalogDB
-      - collection=catalogCol
+    - server="localhost"
+    - port="27017"
+    - database="AuctionDB"
+    - collection="auctionBidCol"
+    - rabbitMQPort="5672"
+    - redisConnection="redis-16065.c56.east-us.azure.redns.redis-cloud.com:16065,password=1234"
+    - Secret="RasmusGrønErSuperCoolOgDenBedsteChef!"
+    - Issuer="Gron&OlsenGruppen"
 
     networks:
       - loki
@@ -63,6 +67,24 @@ services:
       - "27018:27017"
     networks: 
       - loki
+
+  rabbitmq-service:
+    image: rabbitmq:3.11-management
+    ports:
+      - 5672:5672
+    expose:
+      - "8080"
+    networks:
+      - default
+
+  redis-service:
+    image: redis/redis-stack-server:latest
+    ports:
+      - 6379:6379
+    expose:
+      - "8080"
+    networks:
+      - default
 
 volumes:
   mongodbdata:

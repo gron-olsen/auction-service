@@ -109,11 +109,11 @@ public class AuctionController : ControllerBase
 
         if (checkAuctionPrice == -1)
         {
-            _logger.LogError("Auction not found for AuctionID: {AuctionID}", id);
+            _logger.LogError("Auction not found for ProductID: {ProductID}", id);
             return BadRequest("Id does not exist");
         }
 
-        _logger.LogInformation("Auction price retrieved for AuctionID: {AuctionID}. Price: {AuctionPrice}", id, checkAuctionPrice);
+        _logger.LogInformation("Auction price retrieved for ProductID: {ProductID}. Price: {AuctionPrice}", id, checkAuctionPrice);
         return Ok(checkAuctionPrice);
     }
 
@@ -124,18 +124,18 @@ public class AuctionController : ControllerBase
         return Ok(auctions);
     }
 
-    //remember to re-enable Authorize
-    //[Authorize]
+    
+    [Authorize]
     [HttpPost("AuctionBid")]
     public async Task<IActionResult> AuctionBid([FromBody] Bid bid)
     {
         try
         {
-            var checkAuctionPrice = auctionService.GetAuctionPrice(bid.AuctionID);
+            var checkAuctionPrice = auctionService.GetAuctionPrice(bid.ProductID);
 
             if (checkAuctionPrice == -1)
             {
-                string check = $"User with ID {bid.UserID} placed a bid on a non-existing auction (AuctionID: {bid.AuctionID}).";
+                string check = $"User with ID {bid.UserID} placed a bid on a non-existing auction (ProductID: {bid.ProductID}).";
                 _logger.LogWarning(check);
                 return BadRequest(check);
             }
@@ -147,7 +147,7 @@ public class AuctionController : ControllerBase
                 return BadRequest(feedback);
             }
 
-            auctionService.UpdateAuctionPrice(bid.AuctionID, bid.BidPrice);
+            auctionService.UpdateAuctionPrice(bid.ProductID, bid.BidPrice);
 
             string message = JsonConvert.SerializeObject(bid);
             var body = Encoding.UTF8.GetBytes(message);
